@@ -136,6 +136,12 @@ Contribuições são bem-vindas! Se você tiver sugestões ou melhorias, sinta-s
     - O usuario deve estar logado, ao estar logado, para deletar, "no frontend, clica no botao delete account", que abrirá um forms onde será solicitado o email e password para autenticação, ao validar, enviar uma sequência de código aleatório para o email da conta do usuário. Onde o usuário para deletar sua conta forneça o código gerado no forms de confirmação.
 - ### Implementar autenticação com:
     - GitHub, Linkedlin, Google
+- ### Corrigir o tempo de exclusão do token
+- ### Desempenho e Escalabilidade
+    - Cache: Implemente caching para reduzir a carga no banco de dados e melhorar o desempenho. Você pode usar Redis ou Memcached para armazenar resultados de consultas frequentes.
+    - Paginação: Para endpoints que retornam listas grandes, implemente a paginação para melhorar o desempenho e a usabilidade.
+    - Limitação de Taxa: Implemente limitação de taxa (rate limiting) para proteger sua API contra abusos e garantir que todos os usuários tenham acesso justo aos recursos.
+
 
 ## Autores
 - [@Rodrigo_Kelven](https://github.com/Rodrigo-Kelven)
