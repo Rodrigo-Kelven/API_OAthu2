@@ -123,6 +123,12 @@ Este projeto fornece uma implementação simplificada do OAuth2 com FastAPI, per
 - Validação de permissões: Definir permissões para diferentes papéis de usuários (admin, user) é fácil e flexível.
 - Segurança: A aplicação usa JWT para garantir que apenas usuários autenticados com permissões adequadas possam acessar recursos protegidos.
 
-Conclusão
+# Conclusão
 
 OAuth2 é uma excelente escolha para implementar autenticação segura e escalável em APIs e aplicações web. Neste projeto, mostramos como usar OAuth2 de maneira simples e eficiente, garantindo que apenas usuários autenticados e autorizados possam acessar recursos protegidos. Com FastAPI, o processo se torna ainda mais rápido e eficiente, permitindo que você implemente autenticação robusta com um mínimo de código.
+
+# Contribuições
+
+Contribuições são bem-vindas! Se você tiver sugestões ou melhorias, sinta-se à vontade para abrir um issue ou enviar um pull request.;)
+## Autores
+- [@Rodrigo_Kelven](https://github.com/Rodrigo-Kelven)
