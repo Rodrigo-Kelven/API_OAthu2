@@ -10,8 +10,10 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status, Form
 from fastapi.security import OAuth2PasswordRequestForm
 from jwt.exceptions import InvalidTokenError
 
-
+# caso queira entender como funciona, recomendo desenhar o fluxo
 routes_auth_auten = APIRouter()
+
+
 
 # Funções utilitárias
 def verify_password(plain_password, hashed_password):
