@@ -5,17 +5,25 @@
 - Após validar, será enviado um código gerado aleatoriamente para o e-mail da conta do usuário.
 - Para deletar a conta, o usuário deve fornecer o código gerado no formulário de confirmação.
 
+**Status**: Pendente
+
 ## 2. Implementar Autenticação com:
 - GitHub
 - LinkedIn
 - Google
 
+**Status**: Pendente
+
 ## 3. Corrigir o Tempo de Exclusão do Token
+
+**Status**: Pendente
 
 ## 4. Desempenho e Escalabilidade
 - **Cache**: Implemente caching para reduzir a carga no banco de dados e melhorar o desempenho. Você pode usar Redis ou Memcached para armazenar resultados de consultas frequentes.
 - **Paginação**: Para endpoints que retornam listas grandes, implemente a paginação para melhorar o desempenho e a usabilidade.
 - **Limitação de Taxa**: Implemente limitação de taxa (rate limiting) para proteger sua API contra abusos e garantir que todos os usuários tenham acesso justo aos recursos.
+
+**Status**: Pendente
 
 ## 5. Autenticação Multi-Fator (MFA)
 
