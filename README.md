@@ -128,21 +128,8 @@ Este projeto fornece uma implementação simplificada do OAuth2 com FastAPI, per
 OAuth2 é uma excelente escolha para implementar autenticação segura e escalável em APIs e aplicações web. Neste projeto, mostramos como usar OAuth2 de maneira simples e eficiente, garantindo que apenas usuários autenticados e autorizados possam acessar recursos protegidos. Com FastAPI, o processo se torna ainda mais rápido e eficiente, permitindo que você implemente autenticação robusta com um mínimo de código.
 
 # Contribuições
-
 Contribuições são bem-vindas! Se você tiver sugestões ou melhorias, sinta-se à vontade para abrir um issue ou enviar um pull request.;)
-
-# Pendencias/Updates para fazer:
-- ### Na rota delete:
-    - O usuario deve estar logado, ao estar logado, para deletar, "no frontend, clica no botao delete account", que abrirá um forms onde será solicitado o email e password para autenticação, ao validar, enviar uma sequência de código aleatório para o email da conta do usuário. Onde o usuário para deletar sua conta forneça o código gerado no forms de confirmação.
-- ### Implementar autenticação com:
-    - GitHub, Linkedlin, Google
-- ### Corrigir o tempo de exclusão do token
-- ### Desempenho e Escalabilidade
-    - Cache: Implemente caching para reduzir a carga no banco de dados e melhorar o desempenho. Você pode usar Redis ou Memcached para armazenar resultados de consultas frequentes.
-    - Paginação: Para endpoints que retornam listas grandes, implemente a paginação para melhorar o desempenho e a usabilidade.
-    - Limitação de Taxa: Implemente limitação de taxa (rate limiting) para proteger sua API contra abusos e garantir que todos os usuários tenham acesso justo aos recursos.
-- ### Adicionar maior/melhor controle de acesso -> Roles:
-    - Controle de Acesso: Implemente controle de acesso baseado em funções (RBAC) para restringir o acesso a determinados endpoints com base nas permissões do usuário.
 
 ## Autores
 - [@Rodrigo_Kelven](https://github.com/Rodrigo-Kelven)
+
