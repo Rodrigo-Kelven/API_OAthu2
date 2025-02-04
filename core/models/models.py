@@ -1,0 +1,14 @@
+from sqlalchemy import Column, String, Boolean
+from core.config.config_db import Base
+
+
+# Modelo de Usuário no banco de dados
+class UserDB(Base):
+    __tablename__ = "users"
+
+    username = Column(String, primary_key=True, unique=True, index=True, doc="Username do usuario, deve ser unico!")
+    full_name = Column(String, index=True, doc="Nome completo do user")
+    email = Column(String, unique=True, index=True, doc="Email do usuario, deve ser unico!")
+    hashed_password = Column(String, doc="A senha do usuario é salva criptografada")
+    disabled = Column(Boolean, default=False, doc="Estado do usuario, ativo/inativo")
+    role = Column(String, default="user", doc="permissoes do usuario, somente user")
