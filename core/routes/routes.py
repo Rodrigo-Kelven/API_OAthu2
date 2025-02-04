@@ -23,9 +23,12 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
+# pegar a sessao do primeiro usuario encontrado
 def get_user(db: Session, username: str):
     return db.query(UserDB).filter(UserDB.username == username).first()
 
+
+# verifica se esta autenticado
 def authenticate_user(db: Session, username: str, password: str):
     user = get_user(db, username)
     if not user:
@@ -34,6 +37,8 @@ def authenticate_user(db: Session, username: str, password: str):
         return False
     return user
 
+
+# criar token de acesso
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
@@ -44,6 +49,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+# pegar a sessao atual
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
