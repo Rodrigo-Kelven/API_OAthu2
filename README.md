@@ -130,5 +130,12 @@ OAuth2 é uma excelente escolha para implementar autenticação segura e escalá
 # Contribuições
 
 Contribuições são bem-vindas! Se você tiver sugestões ou melhorias, sinta-se à vontade para abrir um issue ou enviar um pull request.;)
+
+# Pendencias/Updates para fazer:
+- ### Na rota delete:
+    - O usuario deve estar logado, ao estar logado, para deletar, "no frontend, clica no botao delete account", que abrirá um forms onde será solicitado o email e password para autenticação, ao validar, enviar uma sequência de código aleatório para o email da conta do usuário. Onde o usuário para deletar sua conta forneça o código gerado no forms de confirmação.
+- ### Implementar autenticação com:
+    - GitHub, Linkedlin, Google
+
 ## Autores
 - [@Rodrigo_Kelven](https://github.com/Rodrigo-Kelven)
