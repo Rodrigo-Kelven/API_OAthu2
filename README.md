@@ -141,7 +141,8 @@ Contribuições são bem-vindas! Se você tiver sugestões ou melhorias, sinta-s
     - Cache: Implemente caching para reduzir a carga no banco de dados e melhorar o desempenho. Você pode usar Redis ou Memcached para armazenar resultados de consultas frequentes.
     - Paginação: Para endpoints que retornam listas grandes, implemente a paginação para melhorar o desempenho e a usabilidade.
     - Limitação de Taxa: Implemente limitação de taxa (rate limiting) para proteger sua API contra abusos e garantir que todos os usuários tenham acesso justo aos recursos.
-
+- ### Adicionar maior/melhor controle de acesso -> Roles:
+    - Controle de Acesso: Implemente controle de acesso baseado em funções (RBAC) para restringir o acesso a determinados endpoints com base nas permissões do usuário.
 
 ## Autores
 - [@Rodrigo_Kelven](https://github.com/Rodrigo-Kelven)
