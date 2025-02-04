@@ -72,6 +72,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         raise credentials_exception
     return user
 
+
+# verificar se a sessao ta ativa
 async def get_current_active_user(
     current_user: Annotated[User , Depends(get_current_user)],
 ):
@@ -79,6 +81,8 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
+
+# rota login
 @routes_auth_auten.post(
         path="/login",
         response_description="Informations of login",
