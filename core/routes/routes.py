@@ -5,10 +5,11 @@ from core.schemas.schemas import Token, TokenData, User, UserResponse, UserRespo
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
 from typing import List, Annotated
-import jwt
+import jwt.exceptions
 from fastapi import APIRouter, Depends, HTTPException, Response, status, Form
 from fastapi.security import OAuth2PasswordRequestForm
-from jwt.exceptions import InvalidTokenError
+
+
 
 # caso queira entender como funciona, recomendo desenhar o fluxo
 routes_auth_auten = APIRouter()
