@@ -12,7 +12,7 @@ routes_auth_auten = APIRouter()
 
 
 
-# rota login
+# rota login, esta rota recebe os dados do front para a validacao
 @routes_auth_auten.post(
         path="/login",
         response_description="Informations of login",
@@ -38,6 +38,7 @@ async def login_for_access_token(
     return Token(access_token=access_token, token_type="bearer")
 
 
+
 # rota para ter suas informacoes
 @routes_auth_auten.get(
         path="/users/me/",
@@ -50,6 +51,7 @@ async def read_users_me(
     current_user: Annotated[User , Depends(get_current_active_user)],
 ):
     return current_user
+
 
 
 # rota para ter as informacoes sobre seus items, lembre da alura, aqui seria onde guarda os "certificados"
@@ -79,7 +81,7 @@ async def create_user(
     email: str = Form(...),
     full_name: str = Form(...),
     password: str = Form(...),
-    role: str = Form(...)
+    #role: str = Form(...)
 
 ):
     db = SessionLocal()
@@ -93,7 +95,7 @@ async def create_user(
         email=email,
         full_name=full_name,
         hashed_password=hashed_password,
-        role=role
+        #role=role
     )
     db.add(db_user)
     db.commit()
@@ -113,7 +115,7 @@ async def get_users():
 
 """
 
-# Listar todos os usuários
+# Listar todos os usuários -> somente user admin 
 @routes_auth_auten.get(
         path="/users/",
         response_model=List[UserResponse],
@@ -161,12 +163,12 @@ async def update_user(
 # Deletar a conta do usuário somente autenticado
 @routes_auth_auten.delete(
         path="/users/delete-account-me/",
-        response_description="Informations delete account"
+        response_description="Informations delete account",
+        name="Route delete user"
 )
 async def delete_user(
     current_user: Annotated[User , Depends(get_current_active_user)],
     ):
-    background_tasks: BackgroundTasks
     db = SessionLocal()
     db_user = get_user(db, current_user.username)  # Obtém o usuário autenticado
 
@@ -180,13 +182,19 @@ async def delete_user(
     return {"detail": f"User  {current_user.username} deleted successfully"}
 
 
+# exemplo simples sistena de envio de mensagem por email
 def write_notification(email: str, message=""):
     with open("log.txt", mode="w") as email_file:
         content = f"notification for {email}: {message}"
         email_file.write(content)
 
 
-@routes_auth_auten.post("/send-notification/{email}")
+@routes_auth_auten.post(
+        "/send-notification/{email}",
+        response_description="Send mesage email",
+        description="Route send mesage email",
+        name="Route send mesage email"
+)
 async def send_notification(email: str, background_tasks: BackgroundTasks):
     background_tasks.add_task(write_notification, email, message="some notification")
     return {"message": "Notification sent in the background"}

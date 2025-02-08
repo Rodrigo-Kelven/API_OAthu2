@@ -11,4 +11,5 @@ class UserDB(Base):
     email = Column(String, unique=True, index=True, doc="Email do usuario, deve ser unico!")
     hashed_password = Column(String, doc="A senha do usuario é salva criptografada")
     disabled = Column(Boolean, default=False, doc="Estado do usuario, ativo/inativo")
+    # caso queira criar um usuario admin, modifique aqui, ou na rota post
     role = Column(String, default="user", doc="permissoes do usuario, somente user")

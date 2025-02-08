@@ -8,20 +8,25 @@ from typing import  Annotated
 import jwt.exceptions
 from fastapi import  Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordRequestForm
+from starlette.middleware.base import BaseHTTPMiddleware
+import logging
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 
 # Funções utilitárias
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
+
 # pegar o password transformado em hash
 def get_password_hash(password):
     return pwd_context.hash(password)
 
+
 # pegar a sessao do primeiro usuario encontrado
 def get_user(db: Session, username: str):
     return db.query(UserDB).filter(UserDB.username == username).first()
-
 
 # verifica se esta autenticado
 def authenticate_user(db: Session, username: str, password: str):
@@ -77,14 +82,11 @@ async def get_current_active_user(
     return current_user
 
 
-from starlette.middleware.base import BaseHTTPMiddleware
-import logging
-from starlette.requests import Request
-from starlette.responses import JSONResponse
 
 
 # Configurar o log
 logging.basicConfig(level=logging.INFO)
+
 
 class LogRequestMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
@@ -112,6 +114,7 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
         return response
     
 
+# talvez implementar, ou usar em cada rota
 class ExceptionHandlingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         try:
@@ -124,4 +127,3 @@ class ExceptionHandlingMiddleware(BaseHTTPMiddleware):
                 content={"message": "An unexpected error occurred", "error": str(e)},
             )
         
-
