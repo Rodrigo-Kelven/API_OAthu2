@@ -4,6 +4,7 @@ from core.routes.routes import routes_auth_auten
 class Tags(Enum):
     OAuth2 = "OAuth2"
 
+
 def all_routes(app):
     app.include_router(routes_auth_auten, tags=[Tags.OAuth2], prefix="/api-auten_auth")
 

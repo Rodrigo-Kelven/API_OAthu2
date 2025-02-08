@@ -1,86 +1,15 @@
 from core.models.models import UserDB
 from core.config.config_db import  SessionLocal
-from core.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, pwd_context, oauth2_scheme
-from core.schemas.schemas import Token, TokenData, User, UserResponse, UserResponseCreate
-from sqlalchemy.orm import Session
-from datetime import datetime, timedelta, timezone
+from core.schemas.schemas import Token, User, UserResponse, UserResponseCreate
 from typing import List, Annotated
-import jwt.exceptions
-from fastapi import APIRouter, Depends, HTTPException, Response, status, Form
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, status, Form, BackgroundTasks, Body
+from core.auth.auth import *
 
 
 
 # caso queira entender como funciona, recomendo desenhar o fluxo
 routes_auth_auten = APIRouter()
 
-
-
-# Funções utilitárias
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-# pegar o password transformado em hash
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-# pegar a sessao do primeiro usuario encontrado
-def get_user(db: Session, username: str):
-    return db.query(UserDB).filter(UserDB.username == username).first()
-
-
-# verifica se esta autenticado
-def authenticate_user(db: Session, username: str, password: str):
-    user = get_user(db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
-
-
-# criar token de acesso
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-
-# pegar a sessao atual
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except InvalidTokenError:
-        raise credentials_exception
-    db = SessionLocal()
-    user = get_user(db, token_data.username)
-    db.close()
-    if user is None:
-        raise credentials_exception
-    return user
-
-
-# verificar se a sessao ta ativa
-async def get_current_active_user(
-    current_user: Annotated[User , Depends(get_current_user)],
-):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
 
 
 # rota login
@@ -234,9 +163,13 @@ async def update_user(
         path="/users/delete-account-me/",
         response_description="Informations delete account"
 )
-async def delete_user(current_user: Annotated[User , Depends(get_current_active_user)]):
+async def delete_user(
+    current_user: Annotated[User , Depends(get_current_active_user)],
+    ):
+    background_tasks: BackgroundTasks
     db = SessionLocal()
     db_user = get_user(db, current_user.username)  # Obtém o usuário autenticado
+
     if not db_user:
         db.close()
         raise HTTPException(status_code=404, detail="User  not found")
@@ -245,3 +178,15 @@ async def delete_user(current_user: Annotated[User , Depends(get_current_active_
     db.commit()
     db.close()
     return {"detail": f"User  {current_user.username} deleted successfully"}
+
+
+def write_notification(email: str, message=""):
+    with open("log.txt", mode="w") as email_file:
+        content = f"notification for {email}: {message}"
+        email_file.write(content)
+
+
+@routes_auth_auten.post("/send-notification/{email}")
+async def send_notification(email: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(write_notification, email, message="some notification")
+    return {"message": "Notification sent in the background"}
