@@ -1,4 +1,4 @@
-from core.models.models import UserDB
+from core.models.models import UserDB, Role
 from core.config.config_db import  SessionLocal
 from core.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, pwd_context, oauth2_scheme
 from core.schemas.schemas import  TokenData, User
@@ -38,7 +38,7 @@ def authenticate_user(db: Session, username: str, password: str):
     return user
 
 
-# criar token de acesso
+# Criar token de acesso
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
@@ -46,11 +46,18 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
+
+    # Garantir que o 'role' seja serializável (se for Enum)
+    if isinstance(to_encode.get("role"), Role):
+        to_encode["role"] = to_encode["role"].value  # Pega o valor da Enum
+
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
-# pegar a sessao atual
+
+
+# Pegar a sessão atual
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -63,14 +70,15 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
-    except InvalidTokenError:
+    except JWTError:  # Captura exceções genéricas de JWT
         raise credentials_exception
+
     db = SessionLocal()
     user = get_user(db, token_data.username)
-    db.close()
     if user is None:
         raise credentials_exception
     return user
+
 
 
 # verificar se a sessao ta ativa
@@ -81,6 +89,11 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
+
+# Função que verifica permissões de acesso
+def check_permissions(user: UserDB, required_role: Role):
+    if user.role != required_role and user.role != Role.admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
 
 
 
