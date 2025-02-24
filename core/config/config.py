@@ -1,5 +1,6 @@
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # Configurações e chave secreta
@@ -19,3 +20,21 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # Esse parâmetro contém a URL que o client (o frontend rodando no browser do usuário) vai usar para mandar o username e senha para obter um token
 # se mudar a rota de login, nao esqueca de mudar aqui, porque o fastapi simplesmente nao AVISA PORRA
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api-auten_auth/login") 
+
+
+def config_CORS(app):
+    # paths onde o front ira enviar dados para o backend
+    origins = [
+        "http://localhost.tiangolo.com",
+        "https://localhost.tiangolo.com",
+        "http://localhost",
+        "http://localhost:8080",
+    ]
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )

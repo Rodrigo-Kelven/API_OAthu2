@@ -1,8 +1,8 @@
-from fastapi import FastAPI
 from core.config.config_db import Base, engine
 from core.routes.all_routes import all_routes
+from fastapi import FastAPI
 from core.auth.auth import *
-from fastapi.middleware.cors import CORSMiddleware
+from core.config.config import *
 
 
 description = """
@@ -55,19 +55,4 @@ app.add_middleware(LogRequestMiddleware)
 # Adiciona o middleware de tratamento de exceções
 app.add_middleware(ExceptionHandlingMiddleware)
 
-
-# paths onde o front ira enviar dados para o backend
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+config_CORS(app)

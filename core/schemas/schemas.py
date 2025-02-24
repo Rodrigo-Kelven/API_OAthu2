@@ -28,6 +28,12 @@ class UserResponse(BaseModel):
     role: str
 
 
+class UserResponseEdit(BaseModel):
+    username: str
+    email: str
+    full_name: str
+
+
 class UserResponseCreate(BaseModel):
     username: str
     email: str

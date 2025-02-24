@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Form, BackgroundTasks, Body
-from core.schemas.schemas import Token, User, UserResponse, UserResponseCreate
+from core.schemas.schemas import Token, User, UserResponse, UserResponseCreate, UserResponseEdit
 from core.config.config_db import  SessionLocal
 from core.models.models import UserDB
 from typing import List, Annotated
@@ -128,7 +128,7 @@ async def get_users(current_user: Annotated[UserResponse , Depends(get_current_a
         description="Route update informations user",
         name="Route informations user"
 )
-async def update_user(username: str, user: UserResponse, current_user: Annotated[User , Depends(get_current_active_user)]):
+async def update_user(username: str, user: UserResponseEdit, current_user: Annotated[User , Depends(get_current_active_user)]):
 
     db = SessionLocal()
     db_user = get_user(db, username)
