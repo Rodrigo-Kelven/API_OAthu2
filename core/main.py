@@ -6,38 +6,24 @@ from core.config.config import *
 
 
 description = """
-## Api OAThu2, em fase de desenvolvimento
+### Api OAThu2, esta em fase de desenvolvimento
 ### Se sinta a vontade para compartilhar feedbacks. 🚀
 
 ## Propósito
 
-- Ser capaz de se implementar de forma segura e flexivel proporcionando **segurança**.
+- ### Ser capaz de se implementar de forma segura e flexivel proporcionando **segurança**.
 
-## Tópics
-
-### Basic implementation:
-
-* **Create users** (_implemented_).
-* **Read users** (_implemented_).
-* **Validate users**  (_implemented_).
-* **Update criptografia** (_not implemented_).
-* **Update performance** (_not implemented_).
-* **Update security** (_not implemented_).
 """
 
 app = FastAPI(
-    title="ChimichangApp",
+    title="Simple API OAthu2",
     description=description,
 
     version="0.0.1",
     contact={
         "name": "Rodrigo Kelven",
-        "url": "http://api-auth-auten/",
-        "email": "t3tese@gmail.com",
-    },
-    license_info={
-        "name": "Apache 2.0",
-        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+        "url": "http://127.0.0.1:8000/docs",
+        "email": "test@gmail.com",
     },
 )
 
