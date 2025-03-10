@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Enum, String, Boolean
+from sqlalchemy import Column, Enum, String, Boolean, Enum as SQLAlchemyEnum
 from core.config.config_db import Base
 from enum import Enum as PyEnum
 
@@ -19,5 +19,5 @@ class UserDB(Base):
     email = Column(String, unique=True, index=True, doc="Email do usuario, deve ser unico!")
     hashed_password = Column(String, doc="A senha do usuario é salva criptografada")
     disabled = Column(Boolean, default=False, doc="Estado do usuario, ativo/inativo")
-    role = Column(Enum(Role), default=Role.user, doc="Permissões do usuário: 'user', 'admin', ou 'moderator'")
+    role = Column(SQLAlchemyEnum(Role), default=Role.user, doc="Permissões do usuário: 'user', 'admin', ou 'moderator'")
     
