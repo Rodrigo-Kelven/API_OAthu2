@@ -1,3 +1,4 @@
+from jwt import PyJWTError
 from core.models.models import UserDB, Role
 from core.config.config_db import  SessionLocal
 from core.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, pwd_context, oauth2_scheme
@@ -70,7 +71,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
-    except JWTError:  # Captura exceções genéricas de JWT
+    except PyJWTError:  # Captura exceções genéricas de JWT
         raise credentials_exception
 
     db = SessionLocal()

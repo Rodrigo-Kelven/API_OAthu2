@@ -8,23 +8,12 @@ from core.config.config import *
 description = """
 ### Api OAThu2, esta em fase de desenvolvimento
 ### Se sinta a vontade para compartilhar feedbacks. 🚀
-
-## Propósito
-
-- ### Ser capaz de se implementar de forma segura e flexivel proporcionando **segurança**.
-
 """
 
 app = FastAPI(
     title="Simple API OAthu2",
     description=description,
-
-    version="0.0.1",
-    contact={
-        "name": "Rodrigo Kelven",
-        "url": "http://127.0.0.1:8000/docs",
-        "email": "test@gmail.com",
-    },
+    version="0.10.5"
 )
 
 all_routes(app)

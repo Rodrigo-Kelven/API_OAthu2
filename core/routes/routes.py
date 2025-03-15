@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Form, BackgroundTasks, Body
+from fastapi import APIRouter, Depends, HTTPException, status, Form, BackgroundTasks
 from core.schemas.schemas import Token, User, UserResponse, UserResponseCreate, UserResponseEdit
-from core.config.config_db import  SessionLocal
+from core.config.config_db import  get_db_users
 from core.models.models import UserDB
 from typing import List, Annotated
 from core.auth.auth import *
 
+from core.services.service import ServicesAuth
 
 
 # caso queira entender como funciona, recomendo desenhar o fluxo
@@ -15,55 +16,42 @@ routes_auth_auten = APIRouter()
 # rota login, esta rota recebe os dados do front para a validacao
 @routes_auth_auten.post(
         path="/login",
+        status_code=status.HTTP_202_ACCEPTED,
         response_description="Informations of login",
         description="Route login user",
         name="Route login user"
 )
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
 
-    db = SessionLocal()
-    user = authenticate_user(db, form_data.username, form_data.password)
-    db.close()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username, "role": user.role}, 
-        expires_delta=access_token_expires
-    )
-    return Token(access_token=access_token, token_type="bearer")
+    return ServicesAuth.login_user(form_data)
 
 
 
 # rota para ter suas informacoes
 @routes_auth_auten.get(
         path="/users/me/",
+        status_code=status.HTTP_200_OK,
         response_model=UserResponse,
         response_description="Informations user",
         description="Route get informations user",
         name="Route get informations user"
 )
 async def read_users_me(current_user: Annotated[User , Depends(get_current_active_user)]):
-    # Verifique as permissões antes de retornar as informações do usuário
-    check_permissions(current_user, Role.user)  # Aqui verificamos se o usuário tem o papel de 'user'
-
-    # Se a permissão foi verificada com sucesso, retornamos os dados do usuário
-    return current_user
+    
+    return ServicesAuth.read_users_informations(current_user)
 
 
 
 # rota para ter as informacoes sobre seus items, lembre da alura, aqui seria onde guarda os "certificados"
 @routes_auth_auten.get(
         path="/users/me/items/",
+        status_code=status.HTTP_200_OK,
         response_description="Informations items user",
         description="Route get items user",
         name="Route get items user"
 )
 async def read_own_items(current_user: Annotated[User , Depends(get_current_active_user)]):
+    
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 
@@ -71,6 +59,7 @@ async def read_own_items(current_user: Annotated[User , Depends(get_current_acti
 # Rota para criar um novo usuário -> qualquer usuario pode criar 
 @routes_auth_auten.post(
         path="/users/",
+        status_code=status.HTTP_201_CREATED,
         response_model=UserResponseCreate,
         response_description="Create user",
         description="Route create user",
@@ -81,48 +70,30 @@ async def create_user(
     email: str = Form(...),
     full_name: str = Form(...),
     password: str = Form(...),
+    db: Session = Depends(get_db_users)
 ):
-    db = SessionLocal()
-    if get_user(db, username):
-        db.close()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username ja registrado!")
-
-    hashed_password = get_password_hash(password)
-    db_user = UserDB(
-        username=username,
-        email=email,
-        full_name=full_name,
-        hashed_password=hashed_password,
-    )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    db.close()
-    return db_user
+    return ServicesAuth.create_user(username, email, full_name, password,db)
 
 
 
 # Listar todos os usuários -> somente user admin 
 @routes_auth_auten.get(
         path="/users/",
+        status_code=status.HTTP_200_OK,
         response_model=List[UserResponse],
         response_description="Users",
         description="Route list users",
         name="Route list users"
 )
 async def get_users(current_user: Annotated[UserResponse , Depends(get_current_active_user)]):
-    # Verifique as permissões antes de retornar as informações do usuário
-    check_permissions(current_user, Role.admin)  # Aqui verificamos se o usuário tem o papel de 'user'
-
-    db = SessionLocal()
-    users = db.query(UserDB).all()
-    db.close()
-    return [UserResponse (**user.__dict__) for user in users]
+    
+    return ServicesAuth.get_all_users(current_user)
 
 
 # Atualizar informações do usuário
 @routes_auth_auten.put(
         path="/users/{username}",
+        status_code=status.HTTP_201_CREATED,
         response_model=UserResponse,
         response_description="Update informations user",
         description="Route update informations user",
@@ -130,41 +101,19 @@ async def get_users(current_user: Annotated[UserResponse , Depends(get_current_a
 )
 async def update_user(username: str, user: UserResponseEdit, current_user: Annotated[User , Depends(get_current_active_user)]):
 
-    db = SessionLocal()
-    db_user = get_user(db, username)
-
-    if not db_user:
-        db.close()
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario nao encontrado!")
-    
-    for key, value in user.dict(exclude_unset=True).items():
-        setattr(db_user, key, value)
-    
-    db.commit()
-    db.refresh(db_user)
-    db.close()
-    return db_user
+    return ServicesAuth.update_user(username, user, current_user)
 
 
 # Deletar a conta do usuário somente autenticado
 @routes_auth_auten.delete(
         path="/users/delete-account-me/",
+        status_code=status.HTTP_202_ACCEPTED,
         response_description="Informations delete account",
         name="Route delete user"
 )
 async def delete_user(current_user: Annotated[User , Depends(get_current_active_user)]):
 
-    db = SessionLocal()
-    db_user = get_user(db, current_user.username)  # Obtém o usuário autenticado
-
-    if not db_user:
-        db.close()
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario nao encontrado!")
-    
-    db.delete(db_user)
-    db.commit()
-    db.close()
-    return {"detail": f"User  {current_user.username} deleted successfully"}
+    return ServicesAuth.delete_user(current_user)
 
 
 # exemplo simples sistena de envio de mensagem por email
@@ -175,11 +124,12 @@ def write_notification(email: str, message=""):
 
 
 @routes_auth_auten.post(
-        "/send-notification/{email}",
+        "/send-notification/email",
+        status_code=status.HTTP_200_OK,
         response_description="Send mesage email",
         description="Route send mesage email",
         name="Route send mesage email"
 )
-async def send_notification(email: str, background_tasks: BackgroundTasks):
+async def send_notification(background_tasks: BackgroundTasks, email = Form(...,description="Email",title="Email")):
     background_tasks.add_task(write_notification, email, message="some notification")
     return {"message": "Notification sent in the background"}

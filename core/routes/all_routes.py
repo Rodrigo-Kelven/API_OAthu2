@@ -4,9 +4,12 @@ from core.routes.routes import routes_auth_auten
 class Tags(Enum):
     OAuth2 = "OAuth2"
 
+class Prefix(Enum):
+    prefix = "/api-auten_auth"
+
 
 def all_routes(app):
-    app.include_router(routes_auth_auten, tags=[Tags.OAuth2], prefix="/api-auten_auth")
+    app.include_router(routes_auth_auten, tags=[Tags.OAuth2], prefix=Prefix.prefix.value)
 
 
 
