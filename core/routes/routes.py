@@ -6,6 +6,7 @@ from typing import List, Annotated
 from core.auth.auth import *
 
 from core.services.service import ServicesAuth
+from core.task_email.background import write_notification
 
 
 # caso queira entender como funciona, recomendo desenhar o fluxo
@@ -114,13 +115,6 @@ async def update_user(username: str, user: UserResponseEdit, current_user: Annot
 async def delete_user(current_user: Annotated[User , Depends(get_current_active_user)]):
 
     return ServicesAuth.delete_user(current_user)
-
-
-# exemplo simples sistena de envio de mensagem por email
-def write_notification(email: str, message=""):
-    with open("log.txt", mode="w") as email_file:
-        content = f"notification for {email}: {message}"
-        email_file.write(content)
 
 
 @routes_auth_auten.post(
