@@ -23,7 +23,7 @@ routes_auth_auten = APIRouter()
         name="Route login user"
 )
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
-
+    # servico para login
     return ServicesAuth.login_user(form_data)
 
 
@@ -38,7 +38,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
         name="Route get informations user"
 )
 async def read_users_me(current_user: Annotated[User , Depends(get_current_active_user)]):
-    
+    # servico para pegar dados pessoais do usuario
     return ServicesAuth.read_users_informations(current_user)
 
 
@@ -52,7 +52,7 @@ async def read_users_me(current_user: Annotated[User , Depends(get_current_activ
         name="Route get items user"
 )
 async def read_own_items(current_user: Annotated[User , Depends(get_current_active_user)]):
-    
+    # servico para pegar itens do usuario
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 
@@ -73,6 +73,7 @@ async def create_user(
     password: str = Form(...),
     db: Session = Depends(get_db_users)
 ):
+    # servico para criar usuario
     return ServicesAuth.create_user(username, email, full_name, password,db)
 
 
@@ -87,7 +88,7 @@ async def create_user(
         name="Route list users"
 )
 async def get_users(current_user: Annotated[UserResponse , Depends(get_current_active_user)]):
-    
+    # servico para listar todos os uaurios 'isto nao deve exeistr, é apenas um exemplo'
     return ServicesAuth.get_all_users(current_user)
 
 
@@ -101,7 +102,9 @@ async def get_users(current_user: Annotated[UserResponse , Depends(get_current_a
         name="Route informations user"
 )
 async def update_user(username: str, user: UserResponseEdit, current_user: Annotated[User , Depends(get_current_active_user)]):
-
+    # servico para realizar atualizacao nso dados os usuario com base no nome passaodp
+    # isto tambem nao deveria exeistir, somente pode realizar esta operacao se o usuario estiver logado
+    # e quando estiver logado, seus dados estejam dispostos a mudanca somente passando o token de login
     return ServicesAuth.update_user(username, user, current_user)
 
 
@@ -113,7 +116,7 @@ async def update_user(username: str, user: UserResponseEdit, current_user: Annot
         name="Route delete user"
 )
 async def delete_user(current_user: Annotated[User , Depends(get_current_active_user)]):
-
+    # servico para deletar usuario se estiver logado, 'somente ele mesmo logado podera deletar sua propria conta'
     return ServicesAuth.delete_user(current_user)
 
 

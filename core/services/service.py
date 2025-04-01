@@ -7,6 +7,7 @@ from typing import List, Annotated
 from core.auth.auth import *
 
 
+# servico somente de usuario
 class ServicesAuth:
 
     @staticmethod
