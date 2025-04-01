@@ -12,6 +12,14 @@ class ServicesAuth:
 
     @staticmethod
     def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+        """
+        Args:
+            token para a realizacao da autenticacao
+        Returns:
+            confirmacao do token de acesso
+        Raises:
+            none 'implementar tratamento' 
+        """
 
         db = SessionLocal()
         user = authenticate_user(db, form_data.username, form_data.password)
@@ -32,6 +40,10 @@ class ServicesAuth:
 
     @staticmethod
     def read_users_informations(current_user: Annotated[User , Depends(get_current_active_user)]):
+        """
+        Args:
+            confirma se o token é valido, sendo valido, realiza a busca dos dados do usuario referente ao token
+        """
         # Verifique as permissões antes de retornar as informações do usuário
         check_permissions(current_user, Role.user)  # Aqui verificamos se o usuário tem o papel de 'user'
 
@@ -40,7 +52,19 @@ class ServicesAuth:
     
 
     @staticmethod
-    def create_user(username: str = Form(...),email: str = Form(...),full_name: str = Form(...),password: str = Form(...), db: Session = Depends(get_db_users)):
+    def create_user(
+        username: str = Form(...),
+        email: str = Form(...),
+        full_name: str = Form(...),
+        password: str = Form(...),
+        db: Session = Depends(get_db_users)
+        ):
+        """
+        Args:
+            dados inseridos pelo usuario, e criacao do token
+        Return:
+            token do usuario 
+        """
          # Verifica se o username já está registrado
         if get_user(db, username):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username ja registrado!")
@@ -56,15 +80,21 @@ class ServicesAuth:
             full_name=full_name,
             hashed_password=hashed_password,
         )
+
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
         db.close()
+
         return db_user
     
 
     @staticmethod
     def get_all_users(current_user: Annotated[UserResponse , Depends(get_current_active_user)]):
+        """
+        Args:
+            recebe o token do usuario e verifica se é valido
+        """
         # Verifique as permissões antes de retornar as informações do usuário
         check_permissions(current_user, Role.admin)  # Aqui verificamos se o usuário tem o papel de 'user'
 
@@ -75,7 +105,15 @@ class ServicesAuth:
     
 
     @staticmethod
-    def update_user(username: str, user: UserResponseEdit, current_user: Annotated[User , Depends(get_current_active_user)]):
+    def update_user(
+        username: str,
+        user: UserResponseEdit,
+        current_user: Annotated[User , Depends(get_current_active_user)]
+        ):
+        """
+        Args:
+            recebe o token como parametro para realizar o update nso dados do usuario
+        """
         db = SessionLocal()
         db_user = get_user(db, username)
 
@@ -94,6 +132,10 @@ class ServicesAuth:
 
     @staticmethod
     def delete_user(current_user: Annotated[User , Depends(get_current_active_user)]):
+        """
+        Args:
+            realiza o delete do usuairo com base no token fornecido sendo validado
+        """
         db = SessionLocal()
         db_user = get_user(db, current_user.username)  # Obtém o usuário autenticado
 
