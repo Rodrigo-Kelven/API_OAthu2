@@ -16,6 +16,7 @@ app = FastAPI(
     version="0.10.6"
 )
 
+# funcao para pegar todas as rotas ao inicializar
 all_routes(app)
 
 # tem que ficar no main.py, porque ao ser iniciado, as tabelas no db seram criadas imediatamente

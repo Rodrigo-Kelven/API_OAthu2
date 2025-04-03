@@ -4,7 +4,6 @@ from core.config.config_db import  get_db_users
 from core.models.models import UserDB
 from typing import List, Annotated
 from core.auth.auth import *
-
 from core.services.service import ServicesAuth
 from core.task_email.background import write_notification
 
