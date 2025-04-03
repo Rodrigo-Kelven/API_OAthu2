@@ -13,7 +13,7 @@ description = """
 app = FastAPI(
     title="Simple API OAthu2",
     description=description,
-    version="0.10.5"
+    version="0.10.6"
 )
 
 all_routes(app)
