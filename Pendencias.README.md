@@ -16,14 +16,14 @@
 
 ## 3. Corrigir o Tempo de Exclusão do Token
 
-**Status**: Pendente
+**Status**: Implementadp
 
 ## 4. Desempenho e Escalabilidade
 - **Cache**: Implemente caching para reduzir a carga no banco de dados e melhorar o desempenho. Você pode usar Redis ou Memcached para armazenar resultados de consultas frequentes.
 - **Paginação**: Para endpoints que retornam listas grandes, implemente a paginação para melhorar o desempenho e a usabilidade.
 - **Limitação de Taxa**: Implemente limitação de taxa (rate limiting) para proteger sua API contra abusos e garantir que todos os usuários tenham acesso justo aos recursos.
 
-**Status**: Pendente
+**Status**: Implementado
 
 ## 5. Autenticação Multi-Fator (MFA)
 
@@ -56,7 +56,7 @@
 - Implementar refresh tokens que possam ser usados para obter novos tokens de acesso sem reautenticar.
 - Criar uma rota para a renovação do token.
 
-**Status**: Pendente
+**Status**: Implementado
 
 ## 8. Suporte a Permissões Baseadas em Funções (RBAC)
 
@@ -67,7 +67,7 @@
 - Configurar endpoints para verificar se o usuário tem permissão para executar uma ação específica (verificar permissão por ação).
 - Melhorar o middleware de verificação de permissões.
 
-**Status**: Pendente
+**Status**: Implementado
 
 ## 9. Melhorias na Validação de Dados de Entrada
 
@@ -77,7 +77,7 @@
 - Validar que o e-mail fornecido pelo usuário seja único na criação e atualização.
 - Garantir que a senha atenda aos critérios de segurança (comprimento mínimo, caracteres especiais, etc.).
 
-**Status**: Pendente
+**Status**: Implementado
 
 ## 10. Testes Automatizados
 
@@ -87,7 +87,7 @@
 - Escrever testes para rotas de login e CRUD de usuários.
 - Testar cenários com usuários sem autenticação, com tokens expirados e com papéis inválidos.
 
-**Status**: Pendente
+**Status**: Implementado
 
 ## 11. Documentação da API com OpenAPI
 
@@ -98,7 +98,7 @@
 - Utilizar os exemplos de entrada e saída nas rotas da documentação.
 - Adicionar autenticação no Swagger para permitir o uso de tokens.
 
-**Status**: Pendente
+**Status**: Implementado
 
 ## 12. Logs de Segurança e Auditoria
 
@@ -108,7 +108,7 @@
 - Adicionar logs de falhas de login e tentativas de acesso a endpoints restritos.
 - Criar um sistema de auditoria para monitorar alterações nos dados de usuários.
 
-**Status**: Pendente
+**Status**: Implementado
 
 ## 13. Mecanismo de Bloqueio de Conta (Rate Limiting e Brute Force Protection)
 
@@ -118,7 +118,7 @@
 - Implementar limites de tentativas de login com bloqueio temporário após várias falhas.
 - Adicionar verificação de CAPTCHA para impedir bots.
 
-**Status**: Pendente
+**Status**: Implementado
 
 ## 14. Aprimorar Segurança de Armazenamento de Senhas
 
@@ -128,4 +128,4 @@
 - Atualizar o algoritmo de hash das senhas para um mais seguro, como Argon2 ou bcrypt.
 - Implementar um mecanismo de atualização de senha (migrar senhas antigas para um hash mais seguro).
 
-**Status**: Pendente
+**Status**: Implementado
