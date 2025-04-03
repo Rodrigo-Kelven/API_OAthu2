@@ -43,6 +43,10 @@ class ServicesAuth:
         """
         Args:
             confirma se o token é valido, sendo valido, realiza a busca dos dados do usuario referente ao token
+        Returns:
+            retorna os dados do usuario caso seja validade como logado tendo o token válido
+        Raises:
+            caso o nao seja autorizado, recebe um erro de acesso negado. 401
         """
         # Verifique as permissões antes de retornar as informações do usuário
         check_permissions(current_user, Role.user)  # Aqui verificamos se o usuário tem o papel de 'user'
@@ -63,8 +67,11 @@ class ServicesAuth:
         Args:
             dados inseridos pelo usuario, e criacao do token
         Return:
-            token do usuario 
+            token do usuario com as informacoes passadas
+        Raises:
+            caso o usuario ja exista, um erro sobre é retornado
         """
+
          # Verifica se o username já está registrado
         if get_user(db, username):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username ja registrado!")
@@ -89,11 +96,16 @@ class ServicesAuth:
         return db_user
     
 
+    # isto sera desativado, esta funcionalidade existira no painel de admin
     @staticmethod
     def getAllUsersService(current_user: Annotated[UserResponse , Depends(get_current_active_user)]):
         """
         Args:
             recebe o token do usuario e verifica se é valido
+        Return:
+            caso o token inserido seja validado, o usuario tendo permissao, os dados sao retornados
+        Raises:
+            caso o usuario nao tenha a permissao nescessaria, um erro de acesso negado é retornado, 401
         """
         # Verifique as permissões antes de retornar as informações do usuário
         check_permissions(current_user, Role.admin)  # Aqui verificamos se o usuário tem o papel de 'user'
@@ -113,6 +125,10 @@ class ServicesAuth:
         """
         Args:
             recebe o token como parametro para realizar o update nso dados do usuario
+        Return:
+            caso o token seja valido, a permissao para update dos dados é concedida
+        Raises:
+            caso o usuario nao tenha a permissao nescessaria, um erro de acesso negado é retornado, 401
         """
         db = SessionLocal()
         db_user = get_user(db, username)
@@ -135,6 +151,10 @@ class ServicesAuth:
         """
         Args:
             realiza o delete do usuairo com base no token fornecido sendo validado
+        Return:
+            caso o token seja valido, um erro 204 é retornado, dizendo que o usuario foi deletado
+        Raises:
+            caso o token do usuario nao seja valido, é retornadp um erro de acesso negado, 40
         """
         db = SessionLocal()
         db_user = get_user(db, current_user.username)  # Obtém o usuário autenticado
