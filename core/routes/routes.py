@@ -24,7 +24,7 @@ routes_auth_auten = APIRouter()
 )
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
     # servico para login
-    return ServicesAuth.login_user(form_data)
+    return ServicesAuth.loginUser(form_data)
 
 
 
@@ -39,7 +39,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 )
 async def read_users_me(current_user: Annotated[User , Depends(get_current_active_user)]):
     # servico para pegar dados pessoais do usuario
-    return ServicesAuth.read_users_informations(current_user)
+    return ServicesAuth.readUsersInformations(current_user)
 
 
 
@@ -74,7 +74,7 @@ async def create_user(
     db: Session = Depends(get_db_users)
 ):
     # servico para criar usuario
-    return ServicesAuth.create_user(username, email, full_name, password,db)
+    return ServicesAuth.createUser(username, email, full_name, password,db)
 
 
 
@@ -89,7 +89,7 @@ async def create_user(
 )
 async def get_users(current_user: Annotated[UserResponse , Depends(get_current_active_user)]):
     # servico para listar todos os uaurios 'isto nao deve exeistr, é apenas um exemplo'
-    return ServicesAuth.get_all_users(current_user)
+    return ServicesAuth.getAllUsers(current_user)
 
 
 # Atualizar informações do usuário
@@ -105,7 +105,7 @@ async def update_user(username: str, user: UserResponseEdit, current_user: Annot
     # servico para realizar atualizacao nso dados os usuario com base no nome passaodp
     # isto tambem nao deveria exeistir, somente pode realizar esta operacao se o usuario estiver logado
     # e quando estiver logado, seus dados estejam dispostos a mudanca somente passando o token de login
-    return ServicesAuth.update_user(username, user, current_user)
+    return ServicesAuth.updateUser(username, user, current_user)
 
 
 # Deletar a conta do usuário somente autenticado
@@ -117,7 +117,7 @@ async def update_user(username: str, user: UserResponseEdit, current_user: Annot
 )
 async def delete_user(current_user: Annotated[User , Depends(get_current_active_user)]):
     # servico para deletar usuario se estiver logado, 'somente ele mesmo logado podera deletar sua propria conta'
-    return ServicesAuth.delete_user(current_user)
+    return ServicesAuth.deleteUser(current_user)
 
 
 @routes_auth_auten.post(

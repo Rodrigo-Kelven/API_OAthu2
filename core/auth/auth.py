@@ -1,4 +1,8 @@
-from jwt import PyJWTError
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import  Depends, HTTPException, status, Form
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
+from starlette.requests import Request
 from core.models.models import UserDB, Role
 from core.config.config_db import  SessionLocal
 from core.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, pwd_context, oauth2_scheme
@@ -6,13 +10,9 @@ from core.schemas.schemas import  TokenData, User
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
 from typing import  Annotated
-import jwt.exceptions
-from fastapi import  Depends, HTTPException, status, Form
-from fastapi.security import OAuth2PasswordRequestForm
-from starlette.middleware.base import BaseHTTPMiddleware
+import jwt
+from jwt.exceptions import PyJWTError
 import logging
-from starlette.requests import Request
-from starlette.responses import JSONResponse
 
 
 # Funções utilitárias

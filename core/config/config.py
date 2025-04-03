@@ -21,7 +21,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # se mudar a rota de login, nao esqueca de mudar aqui, porque o fastapi simplesmente nao AVISA PORRA
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api-auten_auth/login") 
 
-
+# caso precise de mais configuracao, documente e especifique porque
 def config_CORS(app):
     from fastapi.middleware.cors import CORSMiddleware
 
