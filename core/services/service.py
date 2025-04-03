@@ -11,7 +11,7 @@ from core.auth.auth import *
 class ServicesAuth:
 
     @staticmethod
-    def loginUser(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    def loginUserService(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
         """
         Args:
             token para a realizacao da autenticacao
@@ -39,7 +39,7 @@ class ServicesAuth:
     
 
     @staticmethod
-    def readUsersInformations(current_user: Annotated[User , Depends(get_current_active_user)]):
+    def readUsersInformationsService(current_user: Annotated[User , Depends(get_current_active_user)]):
         """
         Args:
             confirma se o token é valido, sendo valido, realiza a busca dos dados do usuario referente ao token
@@ -52,7 +52,7 @@ class ServicesAuth:
     
 
     @staticmethod
-    def createUser(
+    def createUserService(
         username: str = Form(...),
         email: str = Form(...),
         full_name: str = Form(...),
@@ -90,7 +90,7 @@ class ServicesAuth:
     
 
     @staticmethod
-    def getAllUsers(current_user: Annotated[UserResponse , Depends(get_current_active_user)]):
+    def getAllUsersService(current_user: Annotated[UserResponse , Depends(get_current_active_user)]):
         """
         Args:
             recebe o token do usuario e verifica se é valido
@@ -105,7 +105,7 @@ class ServicesAuth:
     
 
     @staticmethod
-    def updateUser(
+    def updateUserService(
         username: str,
         user: UserResponseEdit,
         current_user: Annotated[User , Depends(get_current_active_user)]
@@ -131,7 +131,7 @@ class ServicesAuth:
     
 
     @staticmethod
-    def deleteUser(current_user: Annotated[User , Depends(get_current_active_user)]):
+    def deleteUserService(current_user: Annotated[User , Depends(get_current_active_user)]):
         """
         Args:
             realiza o delete do usuairo com base no token fornecido sendo validado
