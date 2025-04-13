@@ -2,6 +2,9 @@
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) 
 ![FastAPI](https://img.shields.io/badge/FastAPI-%23FF4F00.svg?style=for-the-badge&logo=fastapi&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white) 
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) 
 
 ## Versão 0.10.6
 ### Este projeto implementa uma aplicação com autenticação de usuários utilizando o protocolo OAuth2, um padrão amplamente utilizado para autenticação e autorização em APIs e sistemas web. A seguir, discutiremos em detalhes o que é o OAuth2, como ele funciona, e como este projeto simplifica seu uso com o framework FastAPI.
