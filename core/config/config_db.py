@@ -1,18 +1,27 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.future import select
+import logging
 
+# URL do banco de dados PostgreSQL
+DATABASE_URL = "postgresql+asyncpg://user:password@localhost/fastapi_db"
 
+# Criação do engine assíncrono
+engine_auth = create_async_engine(
+    DATABASE_URL,
+    echo=True,
+    pool_size=20,  # Tamanho do pool de conexões
+    max_overflow=0,  # Conexões adicionais permitidas
+    pool_pre_ping=True, # Verifica se a conexão está ativa antes de se conectar
+)
 
-DATABASE_URL = "sqlite:///./banco_de_dados.db"
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+# Criação do gerenciador de sessões assíncronas
+AsyncSessionLocal = sessionmaker(bind=engine_auth, class_=AsyncSession, expire_on_commit=False)
 
+# Criação da base para os modelos
+Base_auth = declarative_base()
 
-def get_db_users():
-    db_users = SessionLocal()
-    try:
-        yield db_users
-    finally:
-        db_users.close()
+# Função para obter a sessão de banco de dados
+async def get_user_db():
+    async with AsyncSessionLocal() as session:
+        yield session

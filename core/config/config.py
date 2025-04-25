@@ -1,6 +1,11 @@
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Request
+from starlette.middleware.base import BaseHTTPMiddleware
+from logging.handlers import RotatingFileHandler
+import logging
+import os
 
 
 # Configurações e chave secreta
@@ -33,11 +38,60 @@ def config_CORS(app):
     ]
 
     app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["Content-Type", "Authorization"],
-    expose_headers=["X-Custom-Header"],
-    max_age=3600,
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=["Content-Type", "Authorization"],
+        expose_headers=["X-Custom-Header"],
+        max_age=3600,
     )
+
+
+"""
+### Resumo visual
+### Nível configurado	Logs que ele aceita
+-----------------------------------------------
+* DEBUG	    DEBUG, INFO, WARNING, ERROR, CRITICAL
+* INFO	    INFO, WARNING, ERROR, CRITICAL
+* WARNING	WARNING, ERROR, CRITICAL
+* ERROR	    ERROR, CRITICAL
+* CRITICAL	CRITICAL
+"""
+
+
+
+os.makedirs("logs", exist_ok=True)
+# Formato padrão
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+def setup_logger(name, log_file, level=logging.INFO):
+    """Cria e retorna um logger com arquivo próprio."""
+    handler = RotatingFileHandler(log_file, maxBytes=5_000_000, backupCount=3)
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    logger.addHandler(handler)
+    logger.propagate = False  # Evita que os logs se repitam no console
+
+    return logger
+
+# Loggers separados
+app_logger = setup_logger("app_logger", "logs/app.log", logging.INFO)
+auth_logger = setup_logger("auth_logger", "logs/auth.log", logging.INFO)
+#db_logger = setup_logger("db_logger", "logs/db.log", logging.ERROR)
+db_logger = setup_logger("db_logger", "logs/db.log", logging.INFO)
+
+
+
+# Configurar o log de Request e Response
+logging.basicConfig(level=logging.INFO)
+
+
+class LogRequestMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        logging.info(f"Requisição recebida: {request.method} {request.url}")
+        response = await call_next(request)
+        logging.info(f"Resposta enviada com status {response.status_code}")
+        return response
