@@ -8,6 +8,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 
+# route for OAthu2
 routes_auth_auten = APIRouter()
 
 
