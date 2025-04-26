@@ -38,12 +38,9 @@ pydantic-extra-types==2.10.3
 pydantic-settings==2.8.1
 pydantic_core==2.27.2
 Pygments==2.19.1
-<<<<<<< HEAD
 PyJWT==2.11.0
-=======
 PyJWT==2.10.0
 python-dateutil==2.9.0.post0
->>>>>>> ed34727 (ADD, refatotacao sompleta da api, banco de dadose assincronismo)
 python-dotenv==1.0.1
 python-multipart==0.0.20
 PyYAML==6.0.2
