@@ -42,4 +42,5 @@ app.add_middleware(LogRequestMiddleware)
 # Adiciona o middleware de tratamento de exceções
 app.add_middleware(ExceptionHandlingMiddleware)
 
+# configuracao do CORS
 config_CORS(app)
