@@ -4,16 +4,12 @@ from core.config.config_db import AsyncSessionLocal
 from typing import List, Annotated
 from core.auth.auth import OAuth2PasswordRequestForm, get_current_active_user, check_permissions, Role
 from core.services.service import ServicesAuth
-from slowapi import Limiter
-from slowapi.util import get_remote_address
+from core.config.config import limiter
 
 
 # route for OAthu2
 routes_auth_auten = APIRouter()
 
-
-# decoracor do rate limit
-limiter = Limiter(key_func=get_remote_address)
 
 
 # Rota de login
@@ -29,6 +25,7 @@ async def login_for_access_token(
     request: Request,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
     return await ServicesAuth.login_user_Service(form_data)
+
 
 
 # Rota para obter informações do usuário autenticado
@@ -48,6 +45,8 @@ async def read_users_me(
     check_permissions(current_user, Role.user)
     return current_user
 
+
+
 # Rota para obter itens do usuário autenticado
 # DESATIVADA
 @routes_auth_auten.get(
@@ -60,6 +59,8 @@ async def read_users_me(
 )
 async def read_own_items(current_user: Annotated[User , Depends(get_current_active_user)]):
     return [{"item_id": "Foo", "owner": current_user.username}]
+
+
 
 # Rota para criar um novo usuário
 @routes_auth_auten.post(
@@ -82,6 +83,7 @@ async def create_user(
         username, email, full_name, password)
 
 
+
 # Rota para listar todos os usuários (somente admin)
 # DESATIVADA
 @routes_auth_auten.get(
@@ -95,6 +97,8 @@ async def create_user(
 )
 async def get_users(current_user: Annotated[User , Depends(get_current_active_user)]):
     return await ServicesAuth.get_users_Service(current_user)
+
+
 
 # Rota para atualizar informações do usuário
 @routes_auth_auten.put(
@@ -113,6 +117,8 @@ async def update_user(
     current_user: Annotated[User , Depends(get_current_active_user)]
     ):
     return await ServicesAuth.update_user_Service(email, user, current_user)
+
+
 
 # Rota para deletar a conta do usuário
 @routes_auth_auten.delete(
