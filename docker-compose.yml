@@ -3,7 +3,9 @@ version: '3.8'
 services:
   redis:
     image: redis:latest
-    container_name: my-redis
+    container_name: my-redis # nome do container redis
+    networks:
+      - app-network
     ports:
       - "6379:6379"  # Mapeia a porta 6379 do container para a porta 6379 do host
     volumes:
@@ -11,10 +13,13 @@ services:
 
   db:
     image: postgres:17
+    container_name: my-db # nome do container do banco
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: fastapi_db
+    networks:
+      - app-network
     ports:
       - "5432:5432"  # Mapeia a porta 5432 do container para a porta 5432 do host
     volumes:
@@ -22,13 +27,37 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
+    container_name: my-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - app-network
     ports:
       - "5050:80"  # Mapeia a porta 80 do container para a porta 8080 do host
     depends_on:
       - db  # Garante que o serviço db esteja em execução antes de iniciar o pgAdmin
+
+  app:
+    build:
+      context: .  # Caminho para o diretório onde está o seu Dockerfile
+      dockerfile: Dockerfile  # Se você tiver um nome de Dockerfile diferente, pode especificá-lo aqui
+    container_name: my-app
+    networks:
+      - app-network
+    ports:
+      - "8000:8000"  # Mapeando a porta 8000 do container para a 8000 do host
+    volumes:
+      - ./core:/src/core  # Mapeando o código fonte da aplicação do host para o container
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped  # Garantir que o container reinicie automaticamente se falhar
+
+
+networks:
+  app-network:  # Define uma rede personalizada para os contêineres
+    driver: bridge  # Usando o driver padrão bridge para a rede
 
 volumes:
   redis-data:     # Define o volume persistente para o Redis

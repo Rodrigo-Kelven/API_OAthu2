@@ -13,7 +13,7 @@ description = """
 app = FastAPI(
     title="Simple API OAthu2",
     description=description,
-    version="0.2.10"
+    version="0.2.15"
 )
 
 # funcao para pegar todas as rotas ao inicializar

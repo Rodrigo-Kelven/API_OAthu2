@@ -10,6 +10,16 @@ from core.config.config import limiter
 # route for OAthu2
 routes_auth_auten = APIRouter()
 
+@routes_auth_auten.get(
+    path="/",
+    status_code=status.HTTP_200_OK,
+    response_description="Route home",
+    description="Route home test",
+    name="Route Home Test"
+)
+@limiter.limit("50/minute")
+async def route_Home(request: Request):
+    return "Api UP ;)"
 
 
 # Rota de login
